@@ -1,0 +1,27 @@
+# ── Quarantaine sécurité ──
+# Repo hérité cloné pour inspection. Contient un adaptateur LoRA BACKDOORÉ et
+# des datasets empoisonnés (cf. docs/ollama-deployment.md). NE PAS committer.
+# À conserver tel quel pour analyse forensique par l'équipe CYBER.
+_inherited/
+
+# Correction de référence (youen-v/hackathon_ynov) clonée en lecture seule
+# pour diff d'alignement. Code externe — ne pas committer, ne pas exécuter.
+reference/
+
+# Poids de modèles / artefacts lourds (cf. CLAUDE.md)
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.pth
+hf-cache/
+__pycache__/
+*.pyc
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
