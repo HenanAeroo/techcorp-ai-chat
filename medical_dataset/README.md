@@ -26,6 +26,7 @@ Le fichier `medical_dataset_prepared.json` sera créé dans ce dossier.
 
 ## Utilisation (Fine-tuning)
 
-Ce dataset est utilisé par le notebook `rendu/ia/medical_finetune.ipynb` sur Google Colab.
+Ce dataset est utilisé par le notebook `rendu/ia/medical_finetune.ipynb` sur Google Colab.  
+Le notebook tente d'abord de charger depuis ce dossier (upload sur Colab), puis bascule sur HuggingFace.
 
 > ⚠️ Ce modèle reste **expérimental** — non destiné à la production médicale.
