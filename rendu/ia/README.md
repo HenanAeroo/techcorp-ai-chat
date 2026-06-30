@@ -2,6 +2,20 @@
 
 ## Prérequis
 
+**Windows — utiliser `python -m pip` pour éviter les conflits d'interpréteurs :**
+
+```powershell
+# Si pip est absent sur votre Python :
+python -m ensurepip --upgrade
+
+# Installer les dépendances
+python -m pip install -r requirements.txt
+```
+
+> Ne pas utiliser `pip install ...` directement : sur Windows, `pip` et `python` peuvent pointer vers des interpréteurs différents, ce qui donne `ModuleNotFoundError` à l'exécution même si l'installation a réussi.
+
+**Linux / macOS :**
+
 ```bash
 pip install -r requirements.txt
 ```
