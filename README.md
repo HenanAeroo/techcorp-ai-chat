@@ -41,7 +41,6 @@ techcorp-ai-chat/
 ```
 
 > Le serveur d'inférence retenu est **Triton** (option avancée du sujet). Une config
-> **Ollama** alternative reste dans `ollama_server/` à titre de solution de repli.
 
 ## ✅ Prérequis
 
