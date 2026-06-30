@@ -378,17 +378,27 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (type === 'bot') senderLabel = '[JARVIS]';
         else if (type === 'system') senderLabel = '[SYSTEM]';
 
+        // Échappe le HTML d'une chaîne (anti-XSS) en s'appuyant sur le DOM.
+        const escapeHtml = (s) => {
+            const p = document.createElement('p');
+            p.textContent = s;
+            return p.outerHTML;
+        };
+
         // Render Markdown for bot messages using marked.js
         let renderedContent = text;
         if (type === 'bot') {
-            renderedContent = marked.parse(text);
-        } else if (type === 'system') {
-            renderedContent = `<p>${text}</p>`;
+            // La sortie modèle n'est PAS de confiance : Markdown -> HTML puis
+            // assainissement DOMPurify (anti-XSS). Repli : échappement total si
+            // DOMPurify n'est pas chargé (CDN indisponible).
+            const html = marked.parse(text);
+            renderedContent = (typeof DOMPurify !== 'undefined')
+                ? DOMPurify.sanitize(html)
+                : escapeHtml(text);
         } else {
-            // Escape HTML for user input
-            const p = document.createElement('p');
-            p.textContent = text;
-            renderedContent = p.outerHTML;
+            // Messages système (peuvent contenir une erreur serveur/modèle) et
+            // messages utilisateur : échappés, jamais injectés bruts.
+            renderedContent = escapeHtml(text);
         }
 
         messageDiv.innerHTML = `
