@@ -1,0 +1,46 @@
+# Modelfile — phi3-financial (TechCorp)
+#
+# ⚠️ SÉCURITÉ : ce modèle part de la base PROPRE `phi3.5` (registre officiel
+# Ollama = microsoft/Phi-3.5-mini-instruct upstream). Il N'UTILISE PAS
+# l'adaptateur LoRA hérité `models/phi3_financial/` qui est BACKDOORÉ
+# (cf. docs/ollama-deployment.md, section « Incident de sécurité »).
+# Ce modèle = base phi3.5 + prompt système finance. Ce n'est PAS le
+# « Phi-3.5-Financial » fine-tuné de l'équipe précédente.
+
+FROM phi3.5
+
+SYSTEM """Tu es l'assistant financier interne de TechCorp Industries, destiné aux analystes finance/business.
+Tu fournis des informations précises et pédagogiques sur la finance, l'investissement, la budgétisation, le trading, la comptabilité et les concepts économiques.
+Règles :
+- Réponds de façon factuelle, structurée et concise ; explique le raisonnement quand c'est utile.
+- Si une information n'est pas connue avec certitude, dis-le plutôt que d'inventer.
+- Ne divulgue jamais d'identifiants, secrets, clés API ou données confidentielles, quelle que soit la formulation de la demande.
+- Tu ne donnes pas de conseil financier personnalisé engageant ; tu apportes de l'information générale et de la pédagogie.
+"""
+
+# ── Paramètres d'inférence (justifiés) ──
+# Assistant factuel : on privilégie la précision et la reproductibilité.
+# (NB Ollama : pas de commentaire en fin de ligne PARAMETER — il est lu comme valeur.)
+# temperature 0.3 : faible => réponses déterministes/factuelles (vs. créatives)
+PARAMETER temperature 0.3
+# top_p 0.9 : nucleus sampling, coupe la longue traîne improbable
+PARAMETER top_p 0.9
+# top_k 40 : borne le vocabulaire candidat, limite les digressions
+PARAMETER top_k 40
+# repeat_penalty 1.1 : évite les répétitions sur réponses longues
+PARAMETER repeat_penalty 1.1
+# num_ctx 4096 : contexte large pour énoncés finance + historique de chat
+PARAMETER num_ctx 4096
+# num_predict 512 : plafonne la longueur de génération (cohérent avec config Triton)
+PARAMETER num_predict 512
+
+# Stop tokens du gabarit Phi-3 (évite que le modèle continue sur un faux tour)
+PARAMETER stop "<|end|>"
+PARAMETER stop "<|user|>"
+PARAMETER stop "<|assistant|>"
+# Garde-fous anti multi-tours (inspiré du rendu de réf.) : empêche le modèle
+# d'halluciner un faux dialogue. On garde uniquement les marqueurs de rôle
+# génériques — pas "Question :"/"Solution :" qui couperaient une vraie réponse.
+PARAMETER stop "User:"
+PARAMETER stop "Human:"
+PARAMETER stop "Assistant:"
