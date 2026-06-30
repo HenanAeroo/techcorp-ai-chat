@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. // Cognitive System</title>
+    <!-- Google Fonts: Orbitron for Sci-Fi vibe, Inter for clean copy -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <!-- Marked.js for Markdown support -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="cyber-grid">
+    <!-- Scanner line effect -->
+    <div class="scanline"></div>
+
+    <div class="hud-container">
+        <!-- HEADER -->
+        <header class="hud-header">
+            <div class="header-logo">
+                <span class="glitch" data-text="J.A.R.V.I.S.">J.A.R.V.I.S.</span>
+                <span class="header-sub">// SECURE COGNITIVE SHELL</span>
+            </div>
+            <div class="system-status-indicator">
+                <span class="status-label">STATUS DE CONNEXION:</span>
+                <span id="global-status-badge" class="status-badge disconnected">
+                    <span class="status-dot"></span>
+                    <span id="global-status-text">DECONNECTE</span>
+                </span>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <main class="hud-main">
+            <!-- SIDEBAR -->
+            <section class="hud-sidebar">
+                <!-- ARC REACTOR CORE -->
+                <div class="core-container">
+                    <div class="arc-reactor" id="arc-reactor">
+                        <div class="reactor-outer-ring"></div>
+                        <div class="reactor-inner-ring"></div>
+                        <div class="reactor-center-glow"></div>
+                        <div class="reactor-spokes">
+                            <span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="core-stats">
+                        <div class="core-title">J.A.R.V.I.S. CORE</div>
+                        <div id="core-state" class="core-value">STANDBY</div>
+                    </div>
+                </div>
+
+                <!-- CONFIGURATION PANEL -->
+                <div class="cyber-panel">
+                    <div class="panel-header">
+                        <span class="panel-title">PARAMETRES TRITON</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="triton-url">ADRESSE SERVEUR</label>
+                            <input type="text" id="triton-url" value="http://localhost:8000" placeholder="ex: http://localhost:8000">
+                        </div>
+                        <div class="form-group">
+                            <label for="model-name">NOM DU MODELE</label>
+                            <input type="text" id="model-name" value="phi35_financial" placeholder="ex: phi35_financial">
+                        </div>
+                        <button id="btn-reconnect" class="cyber-btn primary">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                            TESTER LA CONNEXION
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AUDIO & VOCAL CONTROLS -->
+                <div class="cyber-panel">
+                    <div class="panel-header">
+                        <span class="panel-title">MODULES VOCAUX & AUDIO</span>
+                    </div>
+                    <div class="panel-body toggle-grid">
+                        <div class="toggle-control">
+                            <div class="toggle-info">
+                                <span class="toggle-title">Synthèse Vocale</span>
+                                <span class="toggle-desc">Lecture vocale des réponses</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-tts">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-control">
+                            <div class="toggle-info">
+                                <span class="toggle-title">Effets Sonores</span>
+                                <span class="toggle-desc">Bips & sons d'interface</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-sfx" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SYSTEM DIAGNOSTICS -->
+                <div class="cyber-panel flex-grow">
+                    <div class="panel-header">
+                        <span class="panel-title">TELEMETRIE SYSTEME</span>
+                    </div>
+                    <div class="panel-body telemetrie">
+                        <div class="stat-row">
+                            <span class="stat-label">Latence (Dernière)</span>
+                            <span id="stat-latency" class="stat-value">-- ms</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Historique Chat</span>
+                            <span id="stat-messages" class="stat-value">0 msg</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Mots Prononcés</span>
+                            <span id="stat-words" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Hôte Triton</span>
+                            <span id="stat-host" class="stat-value">localhost</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHAT WORKSPACE -->
+            <section class="hud-chat-workspace">
+                <div class="terminal-panel">
+                    <div class="terminal-header">
+                        <div class="terminal-title">
+                            <span class="neon-text">TERMINAL // CHAT_LOG_INTERFACE</span>
+                        </div>
+                        <div class="terminal-actions">
+                            <button id="btn-clear" class="icon-btn" title="Effacer l'historique">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MESSAGES CONTAINER -->
+                    <div class="chat-history" id="chat-history">
+                        <!-- Welcome Message -->
+                        <div class="message system">
+                            <div class="message-sender">[JARVIS]</div>
+                            <div class="message-content">
+                                <p>Système cognitif J.A.R.V.I.S. initialisé. Connexion au serveur d'inférence Triton en attente.</p>
+                                <p>Utilisez le terminal ci-dessous pour interagir avec le modèle financier Phi-3.5-Financial ou configurez les options dans la barre latérale.</p>
+                            </div>
+                            <div class="message-time">10:00:00</div>
+                        </div>
+                    </div>
+
+                    <!-- QUICK SUGGESTIONS -->
+                    <div class="chat-suggestions">
+                        <button class="suggestion-chip">Analyses financières pour TechCorp</button>
+                        <button class="suggestion-chip">Quels sont les risques d'investissement ?</button>
+                        <button class="suggestion-chip">Rédige un résumé financier trimestriel</button>
+                    </div>
+
+                    <!-- CHAT INPUT -->
+                    <div class="chat-input-area">
+                        <!-- Dictation status popup if active -->
+                        <div id="dictation-status" class="dictation-status hidden">
+                            <span class="dictation-dot pulse-red"></span>
+                            JARVIS écoute... Parlez maintenant.
+                        </div>
+                        
+                        <div class="input-row">
+                            <button id="btn-dictation" class="icon-btn circle-btn" title="Activer la dictation vocale">
+                                <svg id="mic-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+                                </svg>
+                            </button>
+                            <textarea id="chat-input" placeholder="Entrez votre directive ou cliquez sur le micro..." rows="1"></textarea>
+                            <button id="btn-send" class="icon-btn circle-btn send-btn" title="Envoyer le message">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="hud-footer">
+            <span class="copyright">TECHCORP INDUSTRIES © 2026 // TOUS DROITS RESERVES.</span>
+            <span class="terminal-ver">SYS_SHELL_V3.82.4</span>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
