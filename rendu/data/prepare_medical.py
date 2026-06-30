@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Télécharge et formate le dataset médical ruslanmv/ai-medical-chatbot pour le fine-tuning LoRA.
+Sauvegarde par défaut dans medical_dataset/ (architecture projet).
 Usage: python prepare_medical.py [--limit N] [--output fichier.json]
 """
 
@@ -61,8 +62,10 @@ def main():
     parser = argparse.ArgumentParser(
         description="Prépare le dataset médical ruslanmv/ai-medical-chatbot pour fine-tuning LoRA."
     )
+    # Chemin par défaut vers medical_dataset/ (racine du projet, 2 niveaux au-dessus de rendu/data/)
+    default_output = str(Path(__file__).resolve().parents[2] / "medical_dataset" / "medical_dataset_prepared.json")
     parser.add_argument("--limit", type=int, default=5000, help="Nombre max d'entrées à traiter (défaut: 5000)")
-    parser.add_argument("--output", default="medical_dataset_prepared.json", help="Fichier de sortie JSON")
+    parser.add_argument("--output", default=default_output, help="Fichier de sortie JSON (défaut: medical_dataset/medical_dataset_prepared.json)")
     args = parser.parse_args()
     prepare(args.limit, args.output)
 
