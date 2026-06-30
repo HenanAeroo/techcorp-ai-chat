@@ -74,7 +74,7 @@ def clean(input_path: str, output_path: str) -> None:
     with open(dst, "w", encoding="utf-8") as f:
         json.dump(clean_data, f, ensure_ascii=False, indent=2)
 
-    print(f"\n[NETTOYAGE] {src.name} → {dst.name}")
+    print(f"\n[NETTOYAGE] {src.name} -> {dst.name}")
     print(f"  Entrées initiales  : {total}")
     print(f"  Entrées supprimées : {len(removed)} (indices: {removed[:10]}{'...' if len(removed) > 10 else ''})")
     print(f"  Entrées conservées : {len(clean_data)}")
